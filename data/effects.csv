@@ -1,0 +1,56 @@
+Name,Id,Effect,Magnitude,Value
+Cure Disease,000ae723,Cures all diseases,5,21
+Damage Health,0003eb42,Causes poison damage,2,3
+Damage Magicka,0003a2b6,Drains the target's Magicka,3,52
+Damage Magicka Regen,00073f2b,Decrease target's Magicka regeneration by 100%,5,265
+Damage Stamina,0003a2c6,Drain the target's Stamina,3,43
+Damage Stamina Regen,00073f2c,Decrease target's Stamina regeneration by 100%,5,159
+Fear,00073f20,Creatures and people flee for 30 seconds,1,120
+Fortify Alteration,0003eb24,Alteration spells last longer for 60 seconds,4,47
+Fortify Barter,0003eb23,You haggle for better prices for 30 seconds,1,48
+Fortify Block,0003eb1c,Blocking absorbs more damage for 60 seconds,4,118
+Fortify Carry Weight,0003eb01,Carrying capacity increases for 300 seconds,4,208
+Fortify Conjuration,0003eb25,Conjuration spells last longer for 60 seconds,5,75
+Fortify Destruction,0003eb26,Destruction spells deal more damage for 60 seconds,5,151
+Fortify Enchanting,0003eb29,For 30 seconds items are enchanted stronger,1,14
+Fortify Health,0003eaf3,Health is increased for 60(300) seconds,4,82
+Fortify Heavy Armor,0003eb1e,Increase Heavy Armor skill for 60 seconds,2,55
+Fortify Illusion,0003eb27,Illusion spells are stronger for 60 seconds,4,94
+Fortify Light Armor,0003eb1f,Increases Light Armor skill for 60 seconds,2,55
+Fortify Lockpicking,0003eb21,Lockpicking is easier for 30 seconds,2,25
+Fortify Magicka,0003eaf8,Magicka is increased for 60 seconds,4,71
+Fortify Marksman,0003eb1b,Bows do more damage for 60 seconds,4,118
+Fortify One Handed,0003eb19,One-handed weapons do more damage for 60 seconds,4,118
+Fortify Pickpocket,0003eb20,Pickpocketing is easier for 60 seconds,4,118
+Fortify Restoration,0003eb28,Restoration spells are stronger for 60 seconds,4,118
+Fortify Smithing,0003eb1d,For 30 seconds weapon and armor improving is better,4,82
+Fortify Sneak,0003eb22,You are harder to detect for 60 seconds,4,118
+Fortify Stamina,0003eaf9,Stamina is increased for 60 seconds,4,71
+Fortify Two Handed,0003eb1a,Two-handed weapons do more damage for 60 seconds,4,118
+Frenzy,00073f29,Creatures and people will attack anything nearby for 10 seconds,1,107
+Invisibility,0003eb3d,Invisibility,4,261
+Lingering Damage Health,0010aa4a,Causes poison damage for 10 seconds,1,86
+Lingering Damage Magicka,0010de5f,Drains the target's Magicka for 10 seconds,1,71
+Lingering Damage Stamina,0010de5e,Drain the target's Stamina for 10 seconds,1,12
+Paralysis,00073f30,Target is paralyzed,1,285
+Ravage Health,00073f26,Causes concentrated poison damage,2,6
+Ravage Magicka,00073f27,Concentrated poison damages Magicka,2,15
+Ravage Stamina,00073f23,Concentrated poison damages Stamina,2,24
+Regenerate Health,0003eb06,Health regenerates faster for 300 seconds,5,177
+Regenerate Magicka,0003eb07,Magicka regenerates faster for 300 seconds,5,177
+Regenerate Stamina,0003eb08,Stamina regenerates faster for 300 seconds,5,177
+Resist Fire,0003eaea,Resist fire damage for 60 seconds,3,86
+Resist Frost,0003eaeb,Resist frost damage for 60 seconds,3,86
+Resist Magic,00039e51,Resist magic for 60 seconds,1,51
+Resist Poison,00090041,Resist poison for 60 seconds,4,118
+Resist Shock,0003eaec,Resist shock damage for 60 seconds,3,86
+Restore Health,0003eb15,Restore Health,5,21
+Restore Magicka,0003eb17,Restore Magicka,5,25
+Restore Stamina,0003eb16,Restore Stamina,5,25
+Slow,00073f25,Target moves at 50% speed,5,247
+Waterbreathing,0003ac2d,Can breath underwater,5,100
+Weakness to Fire,00073f2d,Target is weaker to fire damage for 30 seconds,3,48
+Weakness to Frost,00073f2e,Target is weaker to frost damage for 30 seconds,3,40
+Weakness to Magic,00073f51,Target is weaker to magic for 30 seconds,2,51
+Weakness to Poison,00090042,Target is weaker to poison damage for 30 seconds,2,51
+Weakness to Shock,00073f2f,Target is weaker to shock damage for 30 seconds,3,56
