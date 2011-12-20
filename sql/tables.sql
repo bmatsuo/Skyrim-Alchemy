@@ -44,15 +44,15 @@ CREATE VIEW PairSetEffect AS
     WHERE p.Ingredient1 = r1.Name AND p.Ingredient2 = r2.Name AND r1.Id < r2.Id;
 
 CREATE VIEW TripleEffect AS
-    SELECT r1.Name AS Ingredient1, r2.Name AS Ingredient2, r3.Name AS Ingredient3, p.Effect AS Effect
-    FROM Ingredients r1, Ingredients r2, Ingredients r3, PairSetEffect p
-    WHERE p.Ingredient1 = r1.Name AND p.Ingredient2 = r2.Name AND r2.Id < r3.Id
+    SELECT p.Ingredient1 AS Ingredient1, p.Ingredient2 AS Ingredient2, r3.Name AS Ingredient3, p.Effect AS Effect
+    FROM PairSetEffect p, Ingredients r2, Ingredients r3
+    WHERE p.Ingredient2 = r2.Name AND r2.Id < r3.Id
     UNION
-    SELECT r1.Name AS Ingredient1, r2.Name AS Ingredient2, r3.Name AS Ingredient3, p.Effect AS Effect
-    FROM Ingredients r1, Ingredients r2, Ingredients r3, PairSetEffect p
-    WHERE r1.Id < r2.Id AND p.Ingredient1 = r2.Name AND p.Ingredient2 = r3.Name
+    SELECT r1.Name AS Ingredient1, p.Ingredient1 AS Ingredient2, p.Ingredient2 AS Ingredient3, p.Effect AS Effect
+    FROM Ingredients r1, Ingredients r2, PairSetEffect p
+    WHERE p.Ingredient1 = r2.Name AND r1.Id < r2.Id
     UNION
-    SELECT r1.Name AS Ingredient1, r2.Name AS Ingredient2, r3.Name AS Ingredient3, p.Effect AS Effect
+    SELECT p.Ingredient1 AS Ingredient1, r2.Name AS Ingredient2, p.Ingredient2 AS Ingredient3, p.Effect AS Effect
     FROM Ingredients r1, Ingredients r2, Ingredients r3, PairSetEffect p
     WHERE r1.Id < r2.Id AND r2.Id < r3.Id AND p.Ingredient1 = r1.Name AND p.Ingredient2 = r3.Name;
 

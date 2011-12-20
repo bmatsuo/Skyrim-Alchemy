@@ -106,6 +106,8 @@ ingredients can appear on multiple rows.
 Querying the database
 ---------------------
 
+**Computing two-ingredient potion effects**
+
 To see the effects of a two-ingredient potion, say Deathbell + River Betty
 
     sqlite> SELECT Effect FROM PairEffect WHERE Ingredient1 = "Deathbell" AND Ingredient2 = "River Betty";
@@ -113,8 +115,10 @@ To see the effects of a two-ingredient potion, say Deathbell + River Betty
     Slow
     sqlite>
 
+**Computing three-ingredient potion effects**
+
 To see the effects of a three-ingredient potion, say Deathbell + River Betty + Chaurus Eggs,
-the ingredients first need to be sorted by ID
+there are two methods. The first requires the ingredients be sorted by ID
 
     sqlite> SELECT Name, Id
        ...> FROM Ingredients
@@ -123,10 +127,6 @@ the ingredients first need to be sorted by ID
     Chaurus Eggs|0003ad56
     Deathbell|000516c8
     River Betty|00106e1a
-    sqlite>
-
-Then query the TripleEffect view, instead of the PairEffect view from the firt example
-
     sqlite> SELECT Effect
        ...> FROM TripleEffect
        ...> WHERE Ingredient1 = "Chaurus Eggs" AND Ingredient2 = "Deathbell" AND Ingredient3 = "River Betty";
@@ -135,13 +135,52 @@ Then query the TripleEffect view, instead of the PairEffect view from the firt e
     Weakness to Poison
     sqlite> 
 
-To see all combinations of three ingredients which provide both Damage Health and Weakness to Poison
-effects
+Alternatively, SQL unions can be used with simple two-ingredient queries to
+create the three-ingredient effect set
 
-    sqlite> SELECT r1.Name, r2.Name, r3.Name
-       ...> FROM Ingredients r1, Ingredients r2, Ingredients r3
-       ...> WHERE r1.Id < r2.Id AND r2.Id < r3.Id
-       ...>      AND 2 <= (SELECT COUNT(*)
-       ...>                FROM TripleEffect
-       ...>                WHERE Ingredient1 = r1.Name AND Ingredient2 = r2.Name AND Ingredient3 = r3.Name
-       ...>                      AND (Effect = "Damage Heath" OR Effect = "Weakness to Poison"));
+    sqlite> SELECT Effect FROM PairEffect WHERE Ingredient1 = "Deathbell" AND Ingredient2 = "River Betty"
+       ...> UNION
+       ...> SELECT Effect FROM PairEffect WHERE Ingredient1 = "River Betty" AND Ingredient2 = "Chaurus Eggs"
+       ...> UNION
+       ...> SELECT Effect FROM PairEffect WHERE Ingredient1 = "Chaurus Eggs" AND Ingredient2 = "Deathbell";
+    Damage Health
+    Slow
+    Weakness to Poison
+    sqlite> 
+
+Notice that the orders of the select statements, and the order of the
+ingredients in each statement is not important.
+
+**Finding two-ingredient potions with a given effect(s)**
+
+When finding pairs of ingredients with given effects, query the
+PairSetEffectView to avoid duplicates.
+
+    sqlite> SELECT Ingredient1, Ingredient2 FROM PairSetEffect WHERE Effect = "Damage Health"
+       ...> INTERSECT
+       ...> SELECT Ingredient1, Ingredient2 FROM PairSetEffect WHERE Effect = "Slow"
+    Deathbell|River Betty
+    sqlite> 
+
+**Finding three-ingredient potions with a given effect(s)**
+
+It seems the fastest/simplest way to find potions with combinations of effects
+is to intersect simple queries over TripleEffect. Let's make a stat crippling
+poison.
+
+*Note*: This query may take a long time, useful output should be written down or saved somewhere
+to avoid recomputation
+
+    sqlite> SELECT Ingredient1, Ingredient2, Ingredient3 FROM TripleEffect WHERE Effect LIKE "%Damage Health"
+       ...> INTERSECT SELECT Ingredient1, Ingredient2, Ingredient3 FROM TripleEffect WHERE Effect LIKE "%Damage Magicka"
+       ...> INTERSECT SELECT Ingredient1, Ingredient2, Ingredient3 FROM TripleEffect WHERE Effect LIKE "%Damage Stamina";
+    Nightshade|Butterfly Wing|Human Heart
+    Small Antlers|Butterfly Wing|Human Heart
+    sqlite> SELECT Effect FROM PairEffect WHERE Ingredient1 = "Nightshade" AND Ingredient2 = "Butterfly Wing"
+       ...> UNION SELECT Effect FROM PairEffect WHERE Ingredient1 = "Nightshade" AND Ingredient2 = "Human Heart"
+       ...> UNION SELECT Effect FROM PairEffect WHERE Ingredient1 = "Butterfly Wing" AND Ingredient2 = "Human Heart";
+    Damage Health
+    Damage Magicka
+    Damage Magicka Regen
+    Lingering Damage Stamina
+    sqlite> 
