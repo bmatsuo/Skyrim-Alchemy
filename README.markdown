@@ -83,7 +83,7 @@ database views:
 For each ingredient, this simple view aggregates the 4 corresponding rows of
 HasEffect into a single row.
 
-**PairEffect(Ingredient1, Ingredient2, Effect)**
+**PairEffects(Ingredient1, Ingredient2, Effect)**
 
 This is a table of common effects shared between pairs of ingredients. The same
 pair of ingredients can appear in multiple rows with different effects.
@@ -91,13 +91,13 @@ pair of ingredients can appear in multiple rows with different effects.
 The order of the pair does not matter. Thus, If (Ingredient1, Ingredient2,
 Effect) is a row, then (Ingredient2, Ingredient1, Effect) is a row.
 
-**PairSetEffect(Ingredient1, Ingredient2, Effect)**
+**PairSetEffects(Ingredient1, Ingredient2, Effect)**
 
-Like PairEffect, but ingredients pairs must be ordered by their console ids.
+Like PairEffects, but ingredients pairs must be ordered by their console ids.
 Thus, if (Ingredient1, Ingredient2, Effect) is a row, then (Ingredient2,
 Ingredient2, Effect) is not.
 
-**TripleEffect(Ingredient1, Ingredient2, Ingredient3, Effect)**
+**TripleEffects(Ingredient1, Ingredient2, Ingredient3, Effect)**
 
 Rows are ingredient triples with effects shared by at least two of those
 ingredients. The triple of ingredients must be ordered. The same triple of
@@ -110,7 +110,7 @@ Querying the database
 
 To see the effects of a two-ingredient potion, say Deathbell + River Betty
 
-    sqlite> SELECT Effect FROM PairEffect WHERE Ingredient1 = "Deathbell" AND Ingredient2 = "River Betty";
+    sqlite> SELECT Effect FROM PairEffects WHERE Ingredient1 = "Deathbell" AND Ingredient2 = "River Betty";
     Damage Health
     Slow
     sqlite>
@@ -128,7 +128,7 @@ there are two methods. The first requires the ingredients be sorted by ID
     Deathbell|000516c8
     River Betty|00106e1a
     sqlite> SELECT Effect
-       ...> FROM TripleEffect
+       ...> FROM TripleEffects
        ...> WHERE Ingredient1 = "Chaurus Eggs" AND Ingredient2 = "Deathbell" AND Ingredient3 = "River Betty";
     Damage Health
     Slow
@@ -138,11 +138,11 @@ there are two methods. The first requires the ingredients be sorted by ID
 Alternatively, SQL unions can be used with simple two-ingredient queries to
 create the three-ingredient effect set
 
-    sqlite> SELECT Effect FROM PairEffect WHERE Ingredient1 = "Deathbell" AND Ingredient2 = "River Betty"
+    sqlite> SELECT Effect FROM PairEffects WHERE Ingredient1 = "Deathbell" AND Ingredient2 = "River Betty"
        ...> UNION
-       ...> SELECT Effect FROM PairEffect WHERE Ingredient1 = "River Betty" AND Ingredient2 = "Chaurus Eggs"
+       ...> SELECT Effect FROM PairEffects WHERE Ingredient1 = "River Betty" AND Ingredient2 = "Chaurus Eggs"
        ...> UNION
-       ...> SELECT Effect FROM PairEffect WHERE Ingredient1 = "Chaurus Eggs" AND Ingredient2 = "Deathbell";
+       ...> SELECT Effect FROM PairEffects WHERE Ingredient1 = "Chaurus Eggs" AND Ingredient2 = "Deathbell";
     Damage Health
     Slow
     Weakness to Poison
@@ -154,26 +154,28 @@ ingredients in each statement is not important.
 **Finding two-ingredient potions with a given effect(s)**
 
 When finding pairs of ingredients with given effects, query the
-PairSetEffectView to avoid duplicates.
+PairSetEffects view to avoid duplicates.
 
-    sqlite> SELECT Ingredient1, Ingredient2 FROM PairSetEffect WHERE Effect = "Damage Health"
+    sqlite> SELECT Ingredient1, Ingredient2 FROM PairSetEffects WHERE Effect = "Damage Health"
        ...> INTERSECT
-       ...> SELECT Ingredient1, Ingredient2 FROM PairSetEffect WHERE Effect = "Slow"
+       ...> SELECT Ingredient1, Ingredient2 FROM PairSetEffects WHERE Effect = "Slow"
     Deathbell|River Betty
     sqlite> 
 
 **Finding three-ingredient potions with a given effect(s)**
 
 It seems the fastest/simplest way to find potions with combinations of effects
-is to intersect simple queries over TripleEffect. Let's make a stat crippling
+is to intersect simple queries over TripleEffects. Let's make a stat crippling
 poison.
 
 *Note*: This query may take a long time, useful output should be written down or saved somewhere
 to avoid recomputation
 
-    sqlite> SELECT Ingredient1, Ingredient2, Ingredient3 FROM TripleEffect WHERE Effect LIKE "%Damage Health"
-       ...> INTERSECT SELECT Ingredient1, Ingredient2, Ingredient3 FROM TripleEffect WHERE Effect LIKE "%Damage Magicka"
-       ...> INTERSECT SELECT Ingredient1, Ingredient2, Ingredient3 FROM TripleEffect WHERE Effect LIKE "%Damage Stamina";
+    sqlite> SELECT Ingredient1, Ingredient2, Ingredient3, COUNT(*) AS NumEffects
+       ...> FROM TripleEffect
+       ...> WHERE Effect LIKE "%Damage%" AND (Effect LIKE "%Health" OR Effect LIKE "%Magicka" OR Effect LIKE "%Stamina")
+       ...> GROUP BY Ingredient1, Ingredient2, Ingredient3
+       ...> ORDER BY NumEffects DESC;
     Nightshade|Butterfly Wing|Human Heart
     Small Antlers|Butterfly Wing|Human Heart
     sqlite> SELECT Effect FROM PairEffect WHERE Ingredient1 = "Nightshade" AND Ingredient2 = "Butterfly Wing"
